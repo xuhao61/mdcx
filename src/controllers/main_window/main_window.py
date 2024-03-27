@@ -1531,13 +1531,15 @@ class MyMAinWindow(QMainWindow):
             signal.show_scrape_info('💡 请填写番号网址！')  # 主界面左下角显示信息
             return
 
-        if not self.Ui.comboBox_website.currentIndex():
-            signal.show_scrape_info('💡 请选择刮削网站！')  # 主界面左下角显示信息
-            return
-
         self.pushButton_show_log_clicked()  # 点击刮削按钮后跳转到日志页面
         Flags.appoint_url = self.Ui.lineEdit_appoint_url.text().strip()
-        Flags.website_name = self.Ui.comboBox_website.currentText()
+        # 单文件刮削从用户输入的网址中识别网址名，复用现成的逻辑=>主页面输入网址刮削
+        website, url = deal_url(Flags.appoint_url)
+        if website:
+            Flags.website_name = website
+        else:
+            signal.show_scrape_info('💡 不支持的网站！%s' % get_current_time())
+            return
         start_new_scrape(FileMode.Single)
 
     def pushButton_select_file_clear_info_clicked(self):  # 点清空信息
@@ -1545,7 +1547,6 @@ class MyMAinWindow(QMainWindow):
         self.Ui.lineEdit_appoint_url.setText('')
 
         # self.Ui.lineEdit_movie_number.setText('')
-        self.Ui.comboBox_website.setCurrentIndex(0)
 
     # 工具-裁剪封面图
     def pushButton_select_thumb_clicked(self):
@@ -2032,7 +2033,7 @@ class MyMAinWindow(QMainWindow):
     # endregion
 
     # region 检测网络
-    def _netResult(self):
+    def network_check(self):
         start_time = time.time()
         try:
             # 显示代理信息
@@ -2042,7 +2043,7 @@ class MyMAinWindow(QMainWindow):
             signal.show_net_info(' 开始检测网络连通性...')
 
             net_info = {'github': ['https://raw.githubusercontent.com', ''],
-                        'airav_cc': ['https://airav5.fun', ''],
+                        'airav_cc': ['https://airav.io', ''],
                         'iqqtv': ['https://iqq5.xyz', ''],
                         'avsex': ['https://paycalling.com', ''],
                         'freejavbt': ['https://freejavbt.com', ''],
@@ -2053,10 +2054,10 @@ class MyMAinWindow(QMainWindow):
                         'dmm': ['https://www.dmm.co.jp', ''],
                         'mgstage': ['https://www.mgstage.com', ''],
                         'getchu': ['http://www.getchu.com', ''],
-                        'theporndb': ['https://api.metadataapi.net', ''],
+                        'theporndb': ['https://api.theporndb.net', ''],
                         'avsox': [get_avsox_domain(), ''],
                         'xcity': ['https://xcity.jp', ''],
-                        '7mmtv': ['https://7mmtv.tv', ''],
+                        '7mmtv': ['https://7mmtv.sx', ''],
                         'mdtv': ['https://www.mdpjzip.xyz', ''],
                         'madouqu': ['https://madouqu.com', ''],
                         'cnmdb': ['https://cnmdb.net', ''],
@@ -2191,7 +2192,7 @@ class MyMAinWindow(QMainWindow):
             self.Ui.pushButton_check_net.setStyleSheet(
                 'QPushButton#pushButton_check_net{color: white;background-color: rgba(230, 36, 0, 250);}QPushButton:hover#pushButton_check_net{color: white;background-color: rgba(247, 36, 0, 250);}QPushButton:pressed#pushButton_check_net{color: white;background-color: rgba(180, 0, 0, 250);}')
             try:
-                self.t_net = threading.Thread(target=self._netResult)
+                self.t_net = threading.Thread(target=self.network_check)
                 self.t_net.start()  # 启动线程,即让线程开始执行
             except:
                 signal.show_traceback_log(traceback.format_exc())
@@ -2244,14 +2245,11 @@ class MyMAinWindow(QMainWindow):
             return tips
         # self.Ui.pushButton_check_javdb_cookie.setEnabled(False)
         tips = '✅ 连接正常！'
-        new_cookie = {'cookie': input_cookie}
-        cookies = config.javdb_cookie
-        if hasattr(config, 'javdb_website'):
-            javdb_url = config.javdb_website + '/v/D16Q5?locale=zh'
-        else:
-            javdb_url = 'https://javdb.com/v/D16Q5?locale=zh'
+        header = {'cookie': input_cookie}
+        cookies = config.javdb
+        javdb_url = getattr(config, 'javdb_website', 'https://javdb.com') + '/v/D16Q5?locale=zh'
         try:
-            result, response = scraper_html(javdb_url, cookies=new_cookie)
+            result, response = scraper_html(javdb_url, headers=header)
             if not result:
                 if 'Cookie' in response:
                     if cookies != input_cookie:
@@ -2321,10 +2319,7 @@ class MyMAinWindow(QMainWindow):
             'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6',
         }
         headers.update(headers_o)
-        if hasattr(config, 'javbus_website'):
-            javbus_url = config.javbus_website + '/FSDSS-660'
-        else:
-            javbus_url = 'https://javbus.com/FSDSS-660'
+        javbus_url = getattr(config, 'javbus_website', 'https://javbus.com') + '/FSDSS-660'
 
         try:
             result, response = get_html(javbus_url, headers=headers, cookies=new_cookie)

@@ -75,7 +75,7 @@ def read_data(data):
         pass
     tag = ','.join(tag_list)
     slug = data['slug']
-    real_url = f'https://metadataapi.net/scenes/{slug}' if slug else ''
+    real_url = f'https://api.theporndb.net/scenes/{slug}' if slug else ''
     all_actor_list = []
     actor_list = []
     try:
@@ -106,7 +106,7 @@ def get_real_url(res_search, file_path, series_ex, date):
             res_title_list = []
             res_actor_list = []
             for each in search_data:
-                res_id_url = f"https://metadataapi.net/scenes/{each['slug']}"
+                res_id_url = f"https://api.theporndb.net/scenes/{each['slug']}"
                 try:
                     res_series = each['site']['short_name']
                 except:
@@ -147,8 +147,7 @@ def get_real_url(res_search, file_path, series_ex, date):
 
                 # 没有系列时，只判断标题
                 else:
-                    if res_title_nospace in temp_file_path_nospace:
-                        res_title_list.append([res_id_url, res_actor_title_space])
+                    res_title_list.append([res_id_url, res_actor_title_space])
 
             # 系列+日期命中时，一个结果，直接命中；多个结果，返回相似度高的
             if len(res_date_list):
@@ -247,8 +246,8 @@ def main(number, appoint_url='', log_info='', req_web='', language='zh_cn', file
 
     api_token = config.theporndb_api_token
     theporndb_no_hash = config.theporndb_no_hash
-    real_url = appoint_url
-    title = ''
+    real_url = appoint_url.replace("//theporndb", "//api.theporndb")
+    title = number
     cover_url = ''
     poster_url = ''
     image_download = False
@@ -272,13 +271,12 @@ def main(number, appoint_url='', log_info='', req_web='', language='zh_cn', file
             raise Exception(debug_info)
 
         if not real_url:
-
             # 通过hash搜索
             try:
                 if not theporndb_no_hash:
                     hash = oshash.oshash(file_path)
                     # hash = '8679fcbdd29fa735'
-                    url_hash = f'https://api.metadataapi.net/scenes/hash/{hash}'
+                    url_hash = f'https://api.theporndb.net/scenes/hash/{hash}'
                     debug_info = '请求地址: %s ' % url_hash
                     log_info += web_info + debug_info
                     result, hash_search = get_html(url_hash, headers=headers, json_data=True)
@@ -299,22 +297,20 @@ def main(number, appoint_url='', log_info='', req_web='', language='zh_cn', file
                 pass
 
             # 通过文件名搜索
-            if title:
-                hash_data = True
-            else:
+            if title and not hash_data:
                 search_keyword_list, series_ex, date = get_search_keyword(file_path)
                 for search_keyword in search_keyword_list:
-                    url_search = f'https://api.metadataapi.net/scenes?parse={search_keyword}&per_page=100'
-                    debug_info = '请求地址: %s ' % url_search.replace('//api.', '//')
+                    url_search = f'https://api.theporndb.net/scenes?parse={search_keyword}&per_page=100'
+                    debug_info = f'请求地址: {url_search} '
                     log_info += web_info + debug_info
                     result, res_search = get_html(url_search, headers=headers, json_data=True)
 
                     if not result:
                         # 判断返回内容是否有问题
-                        debug_info = '请求错误: %s' % url_search.replace('//api.', '//')
+                        debug_info = f'请求错误: {url_search}'
                         log_info += web_info + debug_info
                         if '401 http' in res_search:
-                            debug_info = '请检查 API Token 是否正确: %s ' % api_token
+                            debug_info = f'请检查 API Token 是否正确: {api_token} '
                             log_info += web_info + debug_info
                         raise Exception(debug_info)
 
@@ -322,15 +318,14 @@ def main(number, appoint_url='', log_info='', req_web='', language='zh_cn', file
                     if real_url:
                         break
                 else:
-                    debug_info = '未找到匹配的内容: %s' % url_search.replace('//api.', '//')
+                    debug_info = f'未找到匹配的内容: {url_search}'
                     log_info += web_info + debug_info
                     raise Exception(debug_info)
 
-        if real_url and not hash_data:
+        if not hash_data:
             debug_info = '番号地址: %s ' % real_url
             log_info += web_info + debug_info
-            req_url = real_url.replace('https://metadataapi.net', 'https://api.metadataapi.net')
-            result, res_real = get_html(req_url, headers=headers, json_data=True)
+            result, res_real = get_html(real_url, headers=headers, json_data=True)
             if not result:
                 # 判断返回内容是否有问题
                 debug_info = '请求错误: %s ' % res_real
@@ -433,6 +428,7 @@ if __name__ == '__main__':
     # print(main('', file_path='AdultTime.20.02.17.Angela.White.Full.Body.Physical.Exam.XXX.1080p.MP4-KTR.mp4'))   # 无命中演员，视为失败
     # print(main('', file_path='SexArt_12.04.13-Elle Alexandra & Lexi Bloom & Malena Morgan-Stepping-Out_SexArt-1080p.mp4'))   # 多个，按相似度命中
     # print(main('', file_path='SexArt.12.04.13 Sex Art.mp4'))   # 多个，按相似度命中
+    print(main('nubilefilms-all-work-and-no-play', file_path=''))
     # print(main('', file_path='SexArt_12.04.13-Elle Alexandra & Malena Morgan-Under-The-Elle-Tree_SexArt-1080p.mp4'))   # 多个，按相似度命中
     # print(main('', file_path='SexArt_12.04.13-Elle Alexandra & Rilee Marks-Whispers_SexArt-1080p.mp4'))   # 多个，按相似度命中
     # print(main('', file_path='SexArt_12.04.13-Hayden Hawkens & Malena Morgan-Golden_SexArt-1080p.mp4'))   # 多个，按相似度命中
@@ -453,5 +449,5 @@ if __name__ == '__main__':
     # print(main('', file_path='hussie-pass-bts-new-boobies-a-brand-new-girl.ts'))    # 演员没有性别
     # print(main('SWhores.23.02.14', file_path='SWhores.23.02.14..Anal Girl with No Extras.1080P.ts'))    # 未获取到演员
     # print(main('', file_path='/test/work/CzechStreets.2019-01-01.18 Y O Virtuoso with Ddd Tits.Nada.mp4'))    # 未获取到演员
-    print(main('Evolvedfights.20.10.30',
-               file_path='AARM-018 - 2021-09-28 - 未知演员 - アロマ企画，アロマ企画/evolvedfights.20.10.30.kay.carter.vs.nathan.bronson.mp4'))
+    # print(main('Evolvedfights.20.10.30',
+    #            file_path='AARM-018 - 2021-09-28 - 未知演员 - アロマ企画，アロマ企画/evolvedfights.20.10.30.kay.carter.vs.nathan.bronson.mp4'))

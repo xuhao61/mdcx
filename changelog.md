@@ -1,38 +1,40 @@
+## 重要
+
+### [每日构建](https://github.com/sqzw-x/mdcx/releases/tag/daily_release)
+
+在此版本后, mdcx 将**降低**版本号变化频率, 版本号基本只用来处理会破坏配置文件兼容性的变更.
+一般的功能更新与 bug 修复均通过 Github actions 每日构建, 可在上述链接下载.
+发布页将显示最后一次提交时间, 时区为 UTC+0, 对应北京时间 +8h 即可.
+
+得益于此, 任何代码提交均将在 24h 内被发布, 因此总是可以获取到最新版本.
+代价是每日构建 **_不会在软件内提示更新_**, 需要手动前往上述页面查看.
+
+除此之外, 请注意此后 **任何 issue 报告均需要包含提交 hash**, 这基本上取代了原来版本号的功能, 文件名中将自动包含提交 hash
+
 ## 新增
-* 国产刮削优化 by @kikyou18
-* 网站: hscangku / cableav by @kikyou18
+
+* 单文件刮削自动选择网站 by @
+* 可设置刮削完成后自动创建 kodi actor 目录及自动创建软链接
+
 ## 修复
-* airavcc xpath 失效
-* fc2 title 获取不完整
-* javdbid 输出逻辑
-* 停用 tv.dmm api
-* nfo 未知演员写入 by @kikyou18
-* 移除标签时仅移除部分
+
+* madouqu year 获取
+* iqqtv url
+* 未知演员写入 nfo
 
 <details>
 <summary>Full Changelog</summary>
 
-36927a8 Fix: tv.dmm api invalid (#80)
-2cf04d9 Merge pull request #84 from sqzw-x/guochan
-6ebe99e Merge PR #83
-e6198d8 Opt: javdbid 输出逻辑
-4c0b778 格式化
-51dd142 Merge pull request #73 from kikiyou18/master
-ba58501 Fix: PR compliance revisions
-55ecbdb Merge branch 'sqzw-x:master' into master
-a046c69 Fix: 移除标签时仅移除部分 (#78)
-edd03b7 Feat: add hscangku and cableav crawlers
-bada9e6 Fix: guochan crawlers remove useless characters; number recognition adjustment
-b97dd3b Fix: madouqu subtle parameter adjustment
-96f68ef Fix: 7mmtv get more extrafanart pics
-0da9440 Chore: guochan data collation
-9c3b28e Fix: non-javdb site writes irrelevant searchid field
-cfa96c8 Fix: madouqu custom website;more actor matching attempts
-192c7e0 Fix: not match unknown actor
-e38989d Fix: mmtv custom website;try more actor matching rules
-fc88133 Fix: nfo文件写入错误空格；手动设置演员写入nfo文件
-8d6cd7e Fix: write custom actor names to nfo file
-443d647 Fix: fc2 title (#72)
-1d359ba Fix: airav_cc xpath (#70)
+26af362 fix: write unknown actor to nfo (close #151)
+a175c97 CI: fix daily release tag
+bab46d7 CI: fix release.yml
+96ee83b feat: 刮削完成后 自动创建actor目录 及 自动创建软链接 (close #142)
+761db21 CI: daily release time
+7ed3531 CI: daily release tag and log
+7099844 feat: single file scraping without site selection
+60122f1 CI: daily build
+5b60511 chore
+e4d7c7a fix: iqqtv default url (close #134)
+e70294b fix(madouqu): year字段类型；处理失败时返回空值 (#129)
 
 </details>

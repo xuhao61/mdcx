@@ -1,6 +1,6 @@
 [modified_time]
-modified_time = 2024-02-07 10:33:32
-version = 120240207
+modified_time = 2024-03-21 00:21:00
+version = 120240321
 
 [media]
 media_path = 
@@ -11,6 +11,7 @@ extrafanart_folder = extrafanart_copy
 media_type = .mp4|.avi|.rmvb|.wmv|.mov|.mkv|.flv|.ts|.webm|.iso|.mpg
 sub_type = .smi|.srt|.idx|.sub|.sup|.psb|.ssa|.ass|.usf|.xss|.ssf|.rt|.lrc|.sbv|.vtt|.ttml
 scrape_softlink_path = 
+auto_link = 0
 
 [escape]
 folders = JAV_output,examples
@@ -172,6 +173,7 @@ use_database = 0
 info_database_path = 
 gfriends_github = https://github.com/gfriends/gfriends
 actor_photo_folder = 
+actor_photo_kodi_auto = 0
 
 [mark]
 poster_mark = 1

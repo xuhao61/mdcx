@@ -13,7 +13,6 @@ from models.config.config_manual import ManualConfig
 
 @singleton
 class MDCxConfig(GeneratedConfig, ManualConfig):
-
     mark_file_name = 'MDCx.config'
 
     def __init__(self):
@@ -36,7 +35,7 @@ class MDCxConfig(GeneratedConfig, ManualConfig):
     @path.getter
     def path(self):
         return self._path
-    
+
     def get_mac_default_config_folder(self):
         """
         获取macOS下默认的配置文件夹路径
@@ -103,6 +102,7 @@ extrafanart_folder = {self.extrafanart_folder}
 media_type = {self.media_type}
 sub_type = {self.sub_type}
 scrape_softlink_path = {self.scrape_softlink_path}
+auto_link = {self.auto_link}
 
 [escape]
 folders = {self.folders}
@@ -266,6 +266,7 @@ use_database = {self.use_database}
 info_database_path = {self.info_database_path}
 gfriends_github = {self.gfriends_github}
 actor_photo_folder = {self.actor_photo_folder}
+actor_photo_kodi_auto = {self.actor_photo_kodi_auto}
 
 [mark]
 poster_mark = {self.poster_mark}
@@ -345,11 +346,6 @@ statement = {self.statement}
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s.0.%s.%s Safari/537.36' % (
                 temp_l, temp_m, temp_n),
         }
-
-        # 获取javdb_cookie
-        self.javdb_cookie = {'cookie': self.javdb} if self.javdb else None
-
-        self.javbus_cookie = {'cookie': self.javbus} if self.javbus else None
 
         # 去掉^符号！！！
         self.cnword_style = self.cnword_style.strip('^')

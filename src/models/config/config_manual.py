@@ -1,6 +1,6 @@
 class ManualConfig:
     # 设置软件版本
-    local_version = 120240207
+    local_version = 120240321
 
     # 定义配置值类型
     INT_KEY = [
@@ -30,7 +30,8 @@ class ManualConfig:
         'retry',
         'rest_count',
         'statement',
-
+        'actor_photo_kodi_auto',
+        'auto_link',
     ]
     FLOAT_KEY = [
         'file_size',
@@ -490,14 +491,14 @@ class ManualConfig:
         '1280×720',
         '960×720',
         '640×480',
-        '90fps'
+        '90fps',
         '60fps',
         '30fps',
         '.cht',
         '.chs',
     ]
     web_dic = {
-        'airav.cc': 'airav_cc',
+        'airav.io': 'airav_cc',
         'airav.wiki': 'airav',
         '9sex': 'avsex',
         'avsex': 'avsex',
@@ -534,7 +535,7 @@ class ManualConfig:
         'cnmdb': 'cnmdb',
         'kin8': 'kin8',
         'fantastica': 'fantastica',
-        'metadataapi': 'theporndb',
+        'theporndb': 'theporndb',
         'prestige': 'prestige',
     }
     char_list = [

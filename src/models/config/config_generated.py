@@ -10,8 +10,8 @@ class GeneratedConfig:
     Also used as default configuration
     """
     # modified_time
-    modified_time = r'2024-02-07 10:33:32'
-    version = 120240207
+    modified_time = r'2024-03-21 00:21:00'
+    version = 120240321
 
     # media
     media_path = r''
@@ -22,6 +22,7 @@ class GeneratedConfig:
     media_type = r'.mp4|.avi|.rmvb|.wmv|.mov|.mkv|.flv|.ts|.webm|.iso|.mpg'
     sub_type = r'.smi|.srt|.idx|.sub|.sup|.psb|.ssa|.ass|.usf|.xss|.ssf|.rt|.lrc|.sbv|.vtt|.ttml'
     scrape_softlink_path = r''
+    auto_link = 0
 
     # escape
     folders = r'JAV_output,examples'
@@ -183,6 +184,7 @@ class GeneratedConfig:
     info_database_path = r''
     gfriends_github = r'https://github.com/gfriends/gfriends'
     actor_photo_folder = r''
+    actor_photo_kodi_auto = 0
 
     # mark
     poster_mark = 1
@@ -238,6 +240,7 @@ extrafanart_folder = {extrafanart_folder}
 media_type = {media_type}
 sub_type = {sub_type}
 scrape_softlink_path = {scrape_softlink_path}
+auto_link = {auto_link}
 
 [escape]
 folders = {folders}
@@ -400,6 +403,7 @@ use_database = {use_database}
 info_database_path = {info_database_path}
 gfriends_github = {gfriends_github}
 actor_photo_folder = {actor_photo_folder}
+actor_photo_kodi_auto = {actor_photo_kodi_auto}
 
 [mark]
 poster_mark = {poster_mark}

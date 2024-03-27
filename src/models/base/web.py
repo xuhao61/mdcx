@@ -9,7 +9,7 @@ from io import BytesIO
 from threading import Lock
 from urllib.parse import quote
 
-import cloudscraper
+# import cloudscraper
 import curl_cffi.requests
 import requests
 import urllib3.util.connection as urllib3_cn
@@ -45,11 +45,11 @@ class WebRequests:
         self.session_g = requests.Session()
         self.session_g.mount('https://', requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100))
         self.session_g.mount('http://', requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100))
-        self.scraper = cloudscraper.create_scraper(
-            browser={'browser': 'firefox', 'platform': 'windows', 'mobile': False})  # returns a CloudScraper instance
+        # self.scraper = cloudscraper.create_scraper(
+        #     browser={'browser': 'firefox', 'platform': 'windows', 'mobile': False})  # returns a CloudScraper instance
         self.lock = Lock()
         self.pool = ThreadPoolExecutor(32)
-        self.curl_session = curl_cffi.requests.Session()
+        self.curl_session = curl_cffi.requests.Session(max_redirects=10)
 
     def get_html(self, url: str, headers=None, cookies=None, proxies=True, allow_redirects=True, json_data=False,
                  content=False,
@@ -157,39 +157,39 @@ class WebRequests:
         signal.add_log(f"🔴 请求失败！{error_info}")
         return False, error_info
 
-    def scraper_html(self, url: str, proxies=True, cookies=None, headers=None):
-        # 获取代理信息
-        is_docker = config.is_docker
-        timeout = config.timeout
-        retry_times = config.retry
-        if is_docker:
-            return self.get_html(url, proxies=proxies, cookies=cookies)
-        if proxies:
-            proxies = config.proxies
-        else:
-            proxies = {
-                "http": None,
-                "https": None,
-            }
-
-        signal.add_log(f'🔎 Scraper请求 {url}')
-        for i in range(retry_times):
-            try:
-                with self.scraper.get(url, headers=headers, proxies=proxies, cookies=cookies, timeout=timeout) as f:
-                    response = f
-
-                if response.status_code > 299:
-                    error_info = f"{response.status_code} {url} {str(f.cookies).replace('<RequestsCookieJar[', '').replace(']>', '')}"
-                    return False, error_info
-                else:
-                    signal.add_log(f'✅ Scraper成功 {url}')
-                response.encoding = 'utf-8'
-                return True, f.text
-            except Exception as e:
-                error_info = '%s\nError: %s' % (url, e)
-                signal.add_log('🔴 重试 [%s/%s] %s' % (i + 1, retry_times, error_info))
-        signal.add_log(f"🔴 请求失败！{error_info}")
-        return False, error_info
+    # def scraper_html(self, url: str, proxies=True, cookies=None, headers=None):
+    #     # 获取代理信息
+    #     is_docker = config.is_docker
+    #     timeout = config.timeout
+    #     retry_times = config.retry
+    #     if is_docker:
+    #         return self.get_html(url, proxies=proxies, cookies=cookies)
+    #     if proxies:
+    #         proxies = config.proxies
+    #     else:
+    #         proxies = {
+    #             "http": None,
+    #             "https": None,
+    #         }
+    #
+    #     signal.add_log(f'🔎 Scraper请求 {url}')
+    #     for i in range(retry_times):
+    #         try:
+    #             with self.scraper.get(url, headers=headers, proxies=proxies, cookies=cookies, timeout=timeout) as f:
+    #                 response = f
+    #
+    #             if response.status_code > 299:
+    #                 error_info = f"{response.status_code} {url} {str(f.cookies).replace('<RequestsCookieJar[', '').replace(']>', '')}"
+    #                 return False, error_info
+    #             else:
+    #                 signal.add_log(f'✅ Scraper成功 {url}')
+    #             response.encoding = 'utf-8'
+    #             return True, f.text
+    #         except Exception as e:
+    #             error_info = '%s\nError: %s' % (url, e)
+    #             signal.add_log('🔴 重试 [%s/%s] %s' % (i + 1, retry_times, error_info))
+    #     signal.add_log(f"🔴 请求失败！{error_info}")
+    #     return False, error_info
 
     def _get_filesize(self, url):
         proxies = config.proxies
@@ -312,7 +312,7 @@ class WebRequests:
         for i in range(int(retry_times)):
             try:
                 response = self.curl_session.get(url_encode(url), headers=headers, cookies=cookies, proxies=proxies,
-                                                 impersonate="edge99")
+                                                 impersonate="chrome120")
                 if 'amazon' in url:
                     response.encoding = 'Shift_JIS'
                 else:
@@ -334,7 +334,7 @@ class WebRequests:
 web = WebRequests()
 get_html = web.get_html
 post_html = web.post_html
-scraper_html = web.scraper_html
+scraper_html = web.curl_html
 multi_download = web.multi_download
 curl_html = web.curl_html
 
@@ -698,7 +698,7 @@ def check_theporndb_api_token():
     proxies = config.proxies
     timeout = config.timeout
     api_token = config.theporndb_api_token
-    url = 'https://api.metadataapi.net/scenes/hash/8679fcbdd29fa735'
+    url = 'https://api.theporndb.net/scenes/hash/8679fcbdd29fa735'
     headers = {
         'Authorization': f'Bearer {api_token}',
         'Content-Type': 'application/json',
