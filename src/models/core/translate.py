@@ -20,6 +20,7 @@ from models.core.web import get_actorname, get_yesjav_title, google_translate
 from models.signals import signal
 
 deepl_result = {}
+REGEX_KANA = re.compile(r"[\u3040-\u30ff]")  # 平假名/片假名
 
 
 def youdao_translate(title, outline):
@@ -297,7 +298,16 @@ def translate_actor(json_data):
                 number.startswith('FC2') or number.startswith('SIRO') or re.search(r'\d{3,}[A-Z]{3,}-', number)):
             result, temp_actor = get_actorname(json_data['number'])
             if result:
+                actor:str = json_data['actor']
+                all_actor:str = json_data['all_actor']
+                actor_list:list = all_actor.split(',')
                 json_data['actor'] = temp_actor
+                # 从actor_list中循环查找元素是否包含字符串temp_actor，有则替换
+                for item in actor_list:
+                    if item.find(actor) != -1:
+                        actor_list[actor_list.index(item)] = temp_actor
+                json_data['all_actor'] = ','.join(actor_list)
+
                 json_data[
                     'logs'] += f"\n 👩🏻 Av-wiki done! Actor's real Japanese name is '{temp_actor}' ({get_used_time(start_time)}s)"
             else:
@@ -328,10 +338,11 @@ def translate_actor(json_data):
         if each_actor:
             actor_data = resources.get_actor_data(each_actor)
             new_actor = actor_data.get(actor_language)
-            if actor_language == 'zh_cn':
-                new_actor = zhconv.convert(new_actor, 'zh-cn')
-            elif actor_language == 'zh_tw':
-                new_actor = zhconv.convert(new_actor, 'zh-hant')
+            if not REGEX_KANA.search(new_actor):
+                if actor_language == 'zh_cn':
+                    new_actor = zhconv.convert(new_actor, 'zh-cn')
+                elif actor_language == 'zh_tw':
+                    new_actor = zhconv.convert(new_actor, 'zh-hant')
             if new_actor not in actor_new_list:
                 actor_new_list.append(new_actor)
                 if actor_data.get('href'):
