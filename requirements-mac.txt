@@ -1,13 +1,13 @@
 lxml==4.9.2
 pyquery==1.4.1
 # cloudscraper==1.2.71
-requests==2.24.0
+requests==2.32.2
 beautifulsoup4==4.9.3
-Pillow==9.4.0
+Pillow==10.3.0
 # 5.15.6 stuck on m1 Ventura 13.5, 5.15.10 is fine
 PyQt5==5.15.10
 PySocks==1.7.1
-urllib3==1.25.11
+urllib3==1.26.18
 zhconv==1.4.3
 langid==1.1.6
 opencv-contrib-python-headless==4.7.0.68
