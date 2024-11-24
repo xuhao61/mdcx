@@ -7,7 +7,7 @@ Pillow==10.3.0
 # 5.15.6 stuck on m1 Ventura 13.5, 5.15.10 is fine
 PyQt5==5.15.10
 PySocks==1.7.1
-urllib3==1.26.18
+urllib3==1.26.19
 zhconv==1.4.3
 langid==1.1.6
 opencv-contrib-python-headless==4.7.0.68

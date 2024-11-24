@@ -6,7 +6,7 @@ beautifulsoup4==4.9.3
 Pillow==10.3.0
 PyQt5==5.15.6
 PySocks==1.7.1
-urllib3==1.26.18
+urllib3==1.26.19
 zhconv==1.4.3
 langid==1.1.6
 opencv-contrib-python-headless==4.7.0.68
