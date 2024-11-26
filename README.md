@@ -42,6 +42,52 @@ ARM64(AArch64) 架构: 可本地构建. 若欲使用 GitHub Actions 构建, 需 
 
 ## 开发
 
+### 环境准备
+- python 3.9
+- Windows 10/11
+- macOS 10.15.7+
+
+### 准备源码
+- 方式1: 下载 [仓库源码](https://github.com/sqzw-x/mdcx/archive/refs/heads/master.zip) 或 [Release源码](https://github.com/sqzw-x/mdcx/archive/refs/tags/daily_release.zip)，下载后解压
+- 方式2: git克隆项目
+  ```bash
+  git clone https://github.com/sqzw-x/mdcx.git
+  ```
+
+### 运行
+#### Windows
+
+- cmd
+```batch
+cd /d D:\dev\mdcx
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+set PYTHONPATH=.\src;%PYTHONPATH%
+python main.py
+```
+
+- powershell
+```powershell
+cd D:\dev\mdcx
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+$env:PYTHONPATH = "./src;$env:PYTHONPATH"
+python main.py
+```
+
+#### macOS
+
+```bash
+cd /path/to/mdcx
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements-mac.txt
+export PYTHONPATH=./src:$PYTHONPATH
+python main.py
+```
+
 ### 如何添加新配置项
 
 1. 在 `config.ini.default` 中添加配置项及其默认值, 值类型可以是字符串, 整数, 浮点数
@@ -69,3 +115,13 @@ ARM64(AArch64) 架构: 可本地构建. 若欲使用 GitHub Actions 构建, 需 
 * `signals.py` 包括 Qt 信号量, 这是 MC 解耦的关键, 它也负责日志打印
 * `config` 和 `signal` 是预定义的单例, 可以在任何位置导入使用
 * `views` 和 `controllers` 结构相对简单, 可参考上文说明
+
+
+## 授权许可
+本插件项目在 GPLv3 许可授权下发行。此外，如果使用本项目表明还额外接受以下条款：
+
+- 本项目仅供学习以及技术交流使用
+- 请勿在公共社交平台上宣传此项目
+- 使用本软件时请遵守当地法律法规
+- 法律及使用后果由使用者自己承担
+- 禁止将本软件用于任何的商业用途

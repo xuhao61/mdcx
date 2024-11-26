@@ -33,8 +33,7 @@ def getActor(response):
     if re.search(r'<a href="/star/\S+">(\S+)</a> &nbsp;', response):
         return str(re.findall(r'<a href="/star/\S+">(\S+)</a> &nbsp;', response)).strip(" [',']").replace('\'', '')
     elif re.search(r'<a href="/heyzo_star/\S+">(\S+)</a> &nbsp;', response):
-        return str(re.findall(r'<a href="/heyzo_star/\S+">(\S+)</a> &nbsp;', response)).strip(" [',']").replace('\'',
-                                                                                                                '')
+        return str(re.findall(r'<a href="/heyzo_star/\S+">(\S+)</a> &nbsp;', response)).strip(" [',']").replace('\'', '')
     else:
         return str(re.findall(r'<b>出演者</b>: ([^<]+) &nbsp; <br>', response)).strip(" [',']").replace('\'', '')
 
@@ -83,8 +82,7 @@ def getRelease(response):
 
 
 def getCover(detail_page):
-    cover_url = str(detail_page.xpath(
-        "/html/body/div[@class='row'][2]/div[@class='col-md-3']/div[@class='col-xs-12 " "col-md-12'][1]/p/a/img[@class='img-responsive']/@src")).strip(
+    cover_url = str(detail_page.xpath("/html/body/div[@class='row'][2]/div[@class='col-md-3']/div[@class='col-xs-12 " "col-md-12'][1]/p/a/img[@class='img-responsive']/@src")).strip(
         " ['']")
     if cover_url == '':
         cover_url = str(detail_page.xpath("//*[@id='vjs_sample_player']/@poster")).strip(" ['']")
@@ -92,8 +90,7 @@ def getCover(detail_page):
 
 
 def getExtraFanart(htmlcode):
-    extrafanart_list = htmlcode.xpath(
-        "/html/body/div[@class='row'][2]/div[@class='col-md-3']/div[@class='col-xs-12 col-md-12']/p/a/img[@class='img-responsive']/@src")
+    extrafanart_list = htmlcode.xpath("/html/body/div[@class='row'][2]/div[@class='col-md-3']/div[@class='col-xs-12 col-md-12']/p/a/img[@class='img-responsive']/@src")
     return extrafanart_list
 
 
@@ -106,7 +103,8 @@ def getTag(response):  # 获取演员
 
 
 def getOutline(detail_page):
-    return detail_page.xpath("string(/html/body/div[2]/div[1]/div[1]/div[2]/div[3]/div)")
+    # 修复路径，避免简介含有垃圾信息 "*根据分发方式，内容可能会有所不同”
+    return detail_page.xpath("string(/html/body/div[2]/div[1]/div[1]/div[2]/div[3]/div/text())")
 
 
 def main(number, appoint_url='', log_info='', req_web='', language='jp'):
@@ -168,15 +166,11 @@ def main(number, appoint_url='', log_info='', req_web='', language='jp'):
         series = getSeries(detail_page)
         extrafanart = getExtraFanart(detail_page)
         # 判断无码
-        uncensorted_list = ['一本道', 'HEYZO', 'サムライポルノ', 'キャットウォーク', 'サイクロン', 'ルチャリブレ',
-                            'スーパーモデルメディア', 'スタジオテリヤキ',
-                            'レッドホットコレクション', 'スカイハイエンターテインメント', '小天狗',
-                            'オリエンタルドリーム', 'Climax Zipang', 'CATCHEYE',
-                            'ファイブスター', 'アジアンアイズ', 'ゴリラ', 'ラフォーレ ガール', 'MIKADO',
-                            'ムゲンエンターテインメント', 'ツバキハウス', 'ザーメン二郎',
-                            'トラトラトラ', 'メルシーボークー', '神風', 'Queen 8', 'SASUKE', 'ファンタドリーム',
-                            'マツエンターテインメント', 'ピンクパンチャー',
-                            'ワンピース', 'ゴールデンドラゴン', 'Tokyo Hot', 'Caribbean']
+        uncensorted_list = ['一本道', 'HEYZO', 'サムライポルノ', 'キャットウォーク', 'サイクロン', 'ルチャリブレ', 'スーパーモデルメディア', 'スタジオテリヤキ',
+                            'レッドホットコレクション', 'スカイハイエンターテインメント', '小天狗', 'オリエンタルドリーム', 'Climax Zipang', 'CATCHEYE', 'ファイブスター',
+                            'アジアンアイズ', 'ゴリラ', 'ラフォーレ ガール', 'MIKADO', 'ムゲンエンターテインメント', 'ツバキハウス', 'ザーメン二郎', 'トラトラトラ',
+                            'メルシーボークー', '神風', 'Queen 8', 'SASUKE', 'ファンタドリーム', 'マツエンターテインメント', 'ピンクパンチャー', 'ワンピース',
+                            'ゴールデンドラゴン', 'Tokyo Hot', 'Caribbean']
         for each in uncensorted_list:
             if each == studio:
                 mosaic = '无码'
@@ -232,19 +226,13 @@ def main(number, appoint_url='', log_info='', req_web='', language='jp'):
             'req_web': req_web + '(%ss) ' % (round((time.time() - start_time), )),
         }
     dic = {website_name: {'zh_cn': dic, 'zh_tw': dic, 'jp': dic}}
-    js = json.dumps(
-        dic,
-        ensure_ascii=False,
-        sort_keys=False,
-        indent=4,
-        separators=(',', ': '),
-    )  # .encode('UTF-8')
+    js = json.dumps(dic, ensure_ascii=False, sort_keys=False, indent=4, separators=(',', ': '), )  # .encode('UTF-8')
     return js
 
 
 if __name__ == '__main__':
     # print(main('blk-495'))
-    print(main('hkgl-004'))
+    # print(main('hkgl-004'))
     # print(main('snis-333'))
     # print(main('GERK-326'))
     # print(main('msfh-010'))
@@ -258,3 +246,4 @@ if __name__ == '__main__':
     # print(main('ABP-905'))
     # print(main('heyzo-1031', ''))
     # print(main('ymdd-173', 'https://www.jav321.com/video/ymdd00173'))
+    print(main('MIST-409'))
